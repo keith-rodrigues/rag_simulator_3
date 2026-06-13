@@ -1,0 +1,520 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keith Rodrigues | Senior Product Manager</title>
+
+<style>
+:root{
+    --bg:#050816;
+    --bg2:#0f172a;
+    --card:rgba(255,255,255,0.05);
+    --border:rgba(255,255,255,0.1);
+    --primary:#00e5ff;
+    --secondary:#8b5cf6;
+    --text:#f8fafc;
+    --muted:#94a3b8;
+    --success:#22c55e;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:Inter,Segoe UI,sans-serif;
+    background:linear-gradient(135deg,var(--bg),var(--bg2));
+    color:var(--text);
+    overflow-x:hidden;
+}
+
+body::before{
+    content:'';
+    position:fixed;
+    inset:0;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(0,229,255,.12), transparent 30%),
+        radial-gradient(circle at 80% 40%, rgba(139,92,246,.12), transparent 30%),
+        radial-gradient(circle at 50% 80%, rgba(34,197,94,.08), transparent 30%);
+    z-index:-1;
+}
+
+.container{
+    width:min(1200px,92%);
+    margin:auto;
+}
+
+nav{
+    position:sticky;
+    top:0;
+    backdrop-filter:blur(20px);
+    background:rgba(5,8,22,.7);
+    border-bottom:1px solid var(--border);
+    z-index:100;
+}
+
+.nav-inner{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 0;
+}
+
+.logo{
+    font-weight:700;
+    letter-spacing:2px;
+    color:var(--primary);
+}
+
+.nav-links{
+    display:flex;
+    gap:25px;
+}
+
+.nav-links a{
+    color:var(--muted);
+    text-decoration:none;
+    transition:.3s;
+}
+
+.nav-links a:hover{
+    color:var(--primary);
+}
+
+.hero{
+    min-height:90vh;
+    display:flex;
+    align-items:center;
+}
+
+.hero-grid{
+    display:grid;
+    grid-template-columns:1.5fr 1fr;
+    gap:50px;
+    align-items:center;
+}
+
+.tag{
+    display:inline-block;
+    padding:8px 16px;
+    border:1px solid rgba(0,229,255,.3);
+    border-radius:999px;
+    color:var(--primary);
+    margin-bottom:20px;
+}
+
+.hero h1{
+    font-size:clamp(3rem,8vw,6rem);
+    line-height:1;
+    margin-bottom:15px;
+}
+
+.gradient{
+    background:linear-gradient(90deg,var(--primary),#ffffff);
+    -webkit-background-clip:text;
+    color:transparent;
+}
+
+.hero h2{
+    color:var(--secondary);
+    margin-bottom:20px;
+}
+
+.hero p{
+    color:var(--muted);
+    font-size:1.1rem;
+    line-height:1.8;
+}
+
+.cta{
+    margin-top:30px;
+    display:flex;
+    gap:15px;
+}
+
+.btn{
+    padding:14px 22px;
+    border-radius:12px;
+    border:none;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.btn-primary{
+    background:linear-gradient(90deg,var(--primary),var(--secondary));
+    color:#000;
+}
+
+.btn-secondary{
+    background:transparent;
+    border:1px solid var(--border);
+    color:white;
+}
+
+.glass{
+    background:var(--card);
+    backdrop-filter:blur(20px);
+    border:1px solid var(--border);
+    border-radius:24px;
+}
+
+.dashboard{
+    padding:30px;
+}
+
+.metric{
+    margin-bottom:25px;
+}
+
+.metric-value{
+    font-size:3rem;
+    color:var(--primary);
+    font-weight:700;
+}
+
+.metric-label{
+    color:var(--muted);
+}
+
+.section{
+    padding:90px 0;
+}
+
+.section-title{
+    font-size:2.5rem;
+    margin-bottom:50px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+.card{
+    padding:25px;
+    transition:.4s;
+}
+
+.card:hover{
+    transform:translateY(-8px);
+}
+
+.card h3{
+    margin-bottom:10px;
+    color:var(--primary);
+}
+
+.card p{
+    color:var(--muted);
+}
+
+.timeline{
+    position:relative;
+}
+
+.timeline::before{
+    content:'';
+    position:absolute;
+    left:18px;
+    top:0;
+    bottom:0;
+    width:2px;
+    background:var(--primary);
+}
+
+.timeline-item{
+    position:relative;
+    padding-left:60px;
+    margin-bottom:40px;
+}
+
+.timeline-item::before{
+    content:'';
+    position:absolute;
+    left:10px;
+    top:8px;
+    width:18px;
+    height:18px;
+    border-radius:50%;
+    background:var(--primary);
+    box-shadow:0 0 20px var(--primary);
+}
+
+.company{
+    font-size:1.3rem;
+    color:var(--primary);
+}
+
+.role{
+    color:white;
+    margin:5px 0;
+}
+
+.date{
+    color:var(--muted);
+    font-size:.9rem;
+}
+
+.skills{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+}
+
+.skill{
+    padding:10px 16px;
+    border-radius:999px;
+    border:1px solid rgba(0,229,255,.2);
+    background:rgba(0,229,255,.08);
+}
+
+footer{
+    padding:40px 0;
+    text-align:center;
+    color:var(--muted);
+}
+
+.reveal{
+    opacity:0;
+    transform:translateY(40px);
+    transition:.8s;
+}
+
+.reveal.active{
+    opacity:1;
+    transform:translateY(0);
+}
+
+@media(max-width:900px){
+
+.hero-grid{
+    grid-template-columns:1fr;
+}
+
+.nav-links{
+    display:none;
+}
+
+.hero{
+    padding-top:60px;
+}
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+<div class="container nav-inner">
+<div class="logo">KEITH.RODRIGUES</div>
+<div class="nav-links">
+<a href="#about">About</a>
+<a href="#experience">Experience</a>
+<a href="#skills">Skills</a>
+</div>
+</div>
+</nav>
+
+<section class="hero container">
+
+<div class="hero-grid">
+
+<div>
+<div class="tag">PRODUCT LEADER • ENTERPRISE SaaS • TRAVEL TECH</div>
+
+<h1>
+Keith<br>
+<span class="gradient">Rodrigues</span>
+</h1>
+
+<h2>Senior Product Manager</h2>
+
+<p>
+Product leader with 20+ years of experience driving enterprise software,
+travel technology, platform strategy, integrations, stakeholder alignment,
+and customer-centric innovation across global organizations.
+Currently focused on building scalable products while continuously learning
+AI, emerging technologies, and modern product practices.
+</p>
+
+<div class="cta">
+<button class="btn btn-primary" onclick="window.print()">
+Export Resume
+</button>
+
+<button class="btn btn-secondary"
+onclick="document.getElementById('experience').scrollIntoView()">
+View Journey
+</button>
+</div>
+
+</div>
+
+<div class="glass dashboard">
+
+<div class="metric">
+<div class="metric-value">20+</div>
+<div class="metric-label">Years Experience</div>
+</div>
+
+<div class="metric">
+<div class="metric-value">4</div>
+<div class="metric-label">Global Organizations</div>
+</div>
+
+<div class="metric">
+<div class="metric-value">MBA</div>
+<div class="metric-label">International Business</div>
+</div>
+
+<div class="metric">
+<div class="metric-value">AI</div>
+<div class="metric-label">Continuous Learning</div>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section id="about" class="section container reveal">
+
+<h2 class="section-title">Professional Profile</h2>
+
+<div class="glass card">
+
+<p>
+Experienced product professional with a unique blend of engineering,
+business, and product leadership expertise. Built a career spanning
+telecommunications, enterprise software, and travel technology.
+
+Known for stakeholder management, product strategy, roadmap execution,
+cross-functional leadership, customer engagement, and delivering solutions
+that balance business value with technical feasibility.
+</p>
+
+</div>
+
+</section>
+
+<section id="experience" class="section container reveal">
+
+<h2 class="section-title">Career Timeline</h2>
+
+<div class="timeline">
+
+<div class="timeline-item">
+<div class="company">Spotnana</div>
+<div class="role">Senior Product Manager</div>
+<div class="date">Current</div>
+</div>
+
+<div class="timeline-item">
+<div class="company">Sabre</div>
+<div class="role">Product Leadership & Travel Technology</div>
+<div class="date">Previous</div>
+</div>
+
+<div class="timeline-item">
+<div class="company">Nokia</div>
+<div class="role">Technology & Product Programs</div>
+<div class="date">Previous</div>
+</div>
+
+<div class="timeline-item">
+<div class="company">Wipro</div>
+<div class="role">Engineering Foundations</div>
+<div class="date">Career Beginning</div>
+</div>
+
+</div>
+
+</section>
+
+<section id="skills" class="section container reveal">
+
+<h2 class="section-title">Core Competencies</h2>
+
+<div class="skills">
+
+<div class="skill">Product Strategy</div>
+<div class="skill">Roadmap Planning</div>
+<div class="skill">Stakeholder Management</div>
+<div class="skill">Enterprise SaaS</div>
+<div class="skill">Travel Technology</div>
+<div class="skill">Platform Products</div>
+<div class="skill">API Ecosystems</div>
+<div class="skill">Systems Integration</div>
+<div class="skill">Customer Discovery</div>
+<div class="skill">Agile Delivery</div>
+<div class="skill">Product Analytics</div>
+<div class="skill">Go-To-Market</div>
+<div class="skill">Leadership</div>
+<div class="skill">AI Strategy</div>
+<div class="skill">RAG Fundamentals</div>
+<div class="skill">Cross Functional Teams</div>
+<div class="skill">Executive Communication</div>
+<div class="skill">Business Analysis</div>
+
+</div>
+
+</section>
+
+<section class="section container reveal">
+
+<h2 class="section-title">Education</h2>
+
+<div class="grid">
+
+<div class="glass card">
+<h3>MBA</h3>
+<p>International Business</p>
+</div>
+
+<div class="glass card">
+<h3>Bachelor of Engineering</h3>
+<p>Electronics & Communication</p>
+</div>
+
+</div>
+
+</section>
+
+<footer>
+Built by Keith Rodrigues • Product Leader • Version 1.0
+</footer>
+
+<script>
+
+const observer = new IntersectionObserver(entries => {
+
+entries.forEach(entry => {
+
+if(entry.isIntersecting){
+entry.target.classList.add('active');
+}
+
+});
+
+},{
+threshold:0.15
+});
+
+document.querySelectorAll('.reveal')
+.forEach(section => observer.observe(section));
+
+</script>
+
+</body>
+</html>
+```
