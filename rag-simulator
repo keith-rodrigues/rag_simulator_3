@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAG Simulator</title>
+<style>
+body{font-family:Inter,Arial,sans-serif;background:#0f172a;color:#e2e8f0;margin:0}
+header{padding:20px;text-align:center;background:#111827;position:sticky;top:0}
+.container{max-width:1200px;margin:auto;padding:20px}
+.card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:16px;margin:12px 0}
+textarea,input{width:100%;background:#1e293b;color:white;border:1px solid #334155;border-radius:8px;padding:10px}
+button{background:#3b82f6;color:white;border:none;padding:10px 16px;border-radius:8px;cursor:pointer;margin:6px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.chunk{background:#1e293b;padding:8px;border-radius:8px;margin:6px 0}
+.good{border-left:4px solid #22c55e}
+.pipeline{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.step{background:#1e293b;padding:10px 14px;border-radius:12px}
+pre{white-space:pre-wrap}
+@media(max-width:800px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+<h1>RAG Simulator</h1>
+<p>Retrieve → Augment → Generate</p>
+</header>
+
+<div class="container">
+
+<div class="card">
+<h2>1. Knowledge Base</h2>
+<textarea id="docs" rows="8">Flight baggage allowance: Business class passengers can check in 40kg baggage.
+
+Refund policy: Tickets cancelled within 24 hours receive a full refund.
+
+Carry-on baggage policy: Passengers may carry one cabin bag up to 7kg.
+
+Flight changes: Date changes are permitted with applicable fees.</textarea>
+<button onclick="chunkDocs()">Chunk Documents</button>
+</div>
+
+<div class="card">
+<h2>Pipeline</h2>
+<div class="pipeline">
+<div class="step">Documents</div>
+<div class="step">Chunking</div>
+<div class="step">Embeddings</div>
+<div class="step">Vector DB</div>
+<div class="step">Retrieval</div>
+<div class="step">Prompt</div>
+<div class="step">LLM</div>
+<div class="step">Answer</div>
+</div>
+</div>
+
+<div class="grid">
+<div class="card">
+<h2>2. Chunks</h2>
+<div id="chunks"></div>
+</div>
+
+<div class="card">
+<h2>3. Vector Database</h2>
+<div id="vectors"></div>
+</div>
+</div>
+
+<div class="card">
+<h2>4. User Query</h2>
+<input id="query" value="What is the baggage allowance for business class?">
+<button onclick="runRAG()">Run Retrieval</button>
+</div>
+
+<div class="grid">
+<div class="card">
+<h2>5. Retrieval Results</h2>
+<div id="results"></div>
+</div>
+
+<div class="card">
+<h2>6. Prompt Construction</h2>
+<pre id="prompt"></pre>
+</div>
+</div>
+
+<div class="card">
+<h2>7. Generated Answer</h2>
+<div id="answer"></div>
+</div>
+
+</div>
+
+<script>
+let chunks=[];
+
+const vocab={
+ baggage:[1,0,0,0],
+ luggage:[1,0,0,0],
+ refund:[0,1,0,0],
+ cancelled:[0,1,0,0],
+ cancellation:[0,1,0,0],
+ flight:[0,0,1,0],
+ change:[0,0,1,0],
+ business:[1,0,0,1],
+ class:[1,0,0,1]
+};
+
+function embed(text){
+ let v=[0,0,0,0];
+ text.toLowerCase().split(/\W+/).forEach(w=>{
+   if(vocab[w]){
+      for(let i=0;i<v.length;i++) v[i]+=vocab[w][i];
+   }
+ });
+ return v;
+}
+
+function cosine(a,b){
+ let dot=0,na=0,nb=0;
+ for(let i=0;i<a.length;i++){
+   dot+=a[i]*b[i];
+   na+=a[i]*a[i];
+   nb+=b[i]*b[i];
+ }
+ return dot/(Math.sqrt(na)*Math.sqrt(nb)+0.0001);
+}
+
+function chunkDocs(){
+ const docs=document.getElementById('docs').value
+   .split(/\n\s*\n/)
+   .filter(x=>x.trim());
+
+ chunks=[];
+
+ docs.forEach((d,i)=>{
+   chunks.push({
+      id:i+1,
+      text:d.trim(),
+      vector:embed(d)
+   });
+ });
+
+ document.getElementById('chunks').innerHTML=chunks.map(c=>
+   `<div class='chunk'>Chunk ${c.id}<br>${c.text}</div>`).join('');
+
+ document.getElementById('vectors').innerHTML=chunks.map(c=>
+   `<div class='chunk'>Chunk ${c.id}<br>Vector: [${c.vector.join(", ")}]</div>`).join('');
+}
+
+function runRAG(){
+ const q=document.getElementById('query').value;
+ const qVec=embed(q);
+
+ let ranked=chunks.map(c=>({
+   ...c,
+   score:cosine(qVec,c.vector)
+ })).sort((a,b)=>b.score-a.score);
+
+ let top=ranked.slice(0,2);
+
+ document.getElementById('results').innerHTML=ranked.map(r=>
+   `<div class='chunk ${top.includes(r)?'good':''}'>
+      Chunk ${r.id}<br>
+      Score: ${r.score.toFixed(3)}<br>
+      ${r.text}
+    </div>`).join('');
+
+ let prompt=`SYSTEM:
+Answer using only retrieved context.
+
+CONTEXT:
+${top.map(t=>t.text).join("\n\n")}
+
+USER:
+${q}`;
+
+ document.getElementById('prompt').textContent=prompt;
+
+ let answer="Based on retrieved context:\n\n"+top[0].text;
+
+ document.getElementById('answer').innerText=answer;
+}
+
+chunkDocs();
+</script>
+</body>
+</html>
